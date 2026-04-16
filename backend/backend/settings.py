@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'users',
-    'courses'
+    'courses',
+    'assignments'
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+# Media files (Assignments/Submissions)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
