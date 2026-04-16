@@ -12,7 +12,7 @@ from users.models import User
 # Create your views here.
 
 
-     #only addmin can post && all can see
+     #only admin can post && all can see
 class CourseListCreateView(APIView):
      permission_classes = [IsAuthenticated]
 
@@ -101,12 +101,12 @@ class EnrollmentView(APIView):
                                                       status = 'approved').first()
                
                if not enrollment:
-                    return Response({'error': f'You must completye {prereq.name} first'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': f'You must complete {prereq.name} first'}, status=status.HTTP_400_BAD_REQUEST)
                
           enrollment, created = Enrollment.objects.get_or_create(student = request.user, course = course)
           
           if not created:
-               return Response({'error': 'You hhave already applied in this course'}, status=status.HTTP_400_BAD_REQUEST)     
+               return Response({'error': 'You have already applied in this course'}, status=status.HTTP_400_BAD_REQUEST)     
 
           serializer = EnrollmentSerializer(enrollment)
           return Response(serializer.data, status=status.HTTP_201_CREATED)
