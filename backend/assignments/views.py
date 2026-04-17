@@ -1,9 +1,5 @@
-import stat
-from django.core.serializers import serialize
-from rest_framework import serializers, viewsets, permissions, status
-from rest_framework.relations import ManyRelatedField
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.utils import serializer_helpers
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Assignment, Submission
@@ -14,21 +10,32 @@ from courses.models import Course, Enrollment
 class AssignmentListCreateView(APIView):
      permission_classes = [IsAuthenticated]
 
-     def get(self, request):
+     def get(self, request, course_pk):
+          try:
+            course = Course.objects.get(pk=course_pk)
+          except Course.DoesNotExist:
+            return Response({'error': 'Course not found.'}, status=status.HTTP_404_NOT_FOUND)  
+       
+          
           if request.user.role == 'teacher':
-               assignments = Assignment.objects.filter(course__teacher = request.user)
+               assignments = Assignment.objects.filter(course__pk = course_pk, course__teacher = request.user)
           elif request.user.role =='student':
                enrolled_courses = Enrollment.objects.filter(student=request.user, status='approved').values_list('course', flat=True) 
-               assignments = Assignment.object.filter(course__in=enrolled_courses)
+               assignments = Assignment.objects.filter(course__pk = course_pk, course__in=enrolled_courses)
           else: 
                assignments = Assignment.objects.all()
           
           serializer = AssignmentSerializer(assignments, many= True)
           return Response(serializer.data)
      
-     def post(self, request):
+     def post(self, request, course_pk):
           if request.user.role != 'teacher':
                return Response({'error': 'Only teachers can Create assignments.'}, status=status.HTTP_403_FORBIDDEN)
+          
+          try:
+            course = Course.objects.get(pk=course_pk)
+          except Course.DoesNotExist:
+            return Response({'error': 'Course not found.'}, status=status.HTTP_404_NOT_FOUND) 
 
           serializer = AssignmentSerializer(data=request.data)
 
@@ -37,7 +44,7 @@ class AssignmentListCreateView(APIView):
                if course.teacher != request.user:
                     return Response({'error':'you can only create assingments for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
 
-               serializer.save()
+               serializer.save(course=course)
                return Response(serializer.data, status=status.HTTP_201_CREATED)
           
           return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -45,11 +52,11 @@ class AssignmentListCreateView(APIView):
           
 
 class AssignmentViewOptionSet(APIView):
-     permission_class = [IsAuthenticated]
+     permission_classes = [IsAuthenticated]
      
-     def get(self, request, pk):
+     def get(self, request,course_pk, pk):
           try:
-               assignment = Assignment.objects.get(pk=pk)
+               assignment = Assignment.objects.get(pk=pk, course__pk = course_pk)
           except Assignment.DoesNotExist:
                return Response({'error': 'Assignment Not Found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -57,12 +64,12 @@ class AssignmentViewOptionSet(APIView):
           
           return Response(serializer.data)
      
-     def put(self, request, pk):
+     def put(self, request, course_pk, pk):
           if request.user.role != 'teacher':
                return Response({'error':'Only teacher can update assignments'}, status=status.HTTP_403_FORBIDDEN)
 
           try:
-               assignment = Assignment.objects.get(pk=pk)
+               assignment = Assignment.objects.get(pk=pk, course__pk = course_pk)
           except Assignment.DoesNotExist:
                return Response({'error':'Assginment not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -78,12 +85,12 @@ class AssignmentViewOptionSet(APIView):
           return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-     def delete(self, request, pk):
+     def delete(self, request,course_pk, pk):
           if request.user.role != 'teacher':
                return Response({'error':'Only teacher can delete assingments'}, status=status.HTTP_403_FORBIDDEN)
 
           try:
-               assignment = Assignment.objects.get(pk=pk)
+               assignment = Assignment.objects.get(pk=pk, course__pk= course_pk)
           except Assignment.DoesNotExist:
                return Response({'error':'Assingment not found'}, status=status.HTTP_404_NOT_FOUND)
           
@@ -91,14 +98,20 @@ class AssignmentViewOptionSet(APIView):
                return Response({'error':'you can only delete assingments for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
           
           assignment.delete()          
-          return Response({'message':'Assignment Deleted....'})
+          return Response({'message':'Assignment Deleted....'}, status=status.HTTP_204_NO_CONTENT)
 
 
 
 class SubmissionListCreateView(APIView):
      permission_classes = [IsAuthenticated]
 
-     def get(self, request):
+     def get(self, request, course_pk, pk):
+          try:
+            assignments = Assignment.objects.get(pk=pk, course__pk = course_pk)
+          except Assignment.DoesNotExist:
+            return Response({'error': 'Assignment not found.'}, status=status.HTTP_404_NOT_FOUND) 
+       
+       
           if request.user.role == 'teacher':
                submissions = Submission.objects.filter(assignment__course__teacher=request.user)
           elif request.user.role == 'student':
@@ -109,7 +122,13 @@ class SubmissionListCreateView(APIView):
           serializer = SubmissionSerializer(submissions, many=True)
           return Response(serializer.data)
      
-     def post(self, request):
+     def post(self, request, course_pk, pk):
+          try:
+            assignment = Assignment.objects.get(pk=pk, course__pk=course_pk)
+          except Assignment.DoesNotExist:
+            return Response({'error': 'Assignemnt not found.'}, status=status.HTTP_404_NOT_FOUND) 
+       
+       
           if request.user.role != 'student':
                return Response({'error':'Only students can submiit assginments'}, status=status.HTTP_403_FORBIDDEN)
 
@@ -131,12 +150,12 @@ class SubmissionListCreateView(APIView):
 class GradeSubmissionView(APIView):
      permission_classes = [IsAuthenticated]
 
-     def put(self, request, pk):
+     def put(self, request, course_pk, pk, submission_pk):
           if request.user.role != 'teacher':
                return Response({'error':'Only teachers can grade'}, status=status.HTTP_403_FORBIDDEN)
 
           try:
-               submission = Submission.objects.get(pk=pk)
+               submission = Submission.objects.get(pk=submission_pk, assignment_pk= pk, assignment__course__pk=course_pk)
           except Submission.DoesNotExist:
                return Response({'error':'Not found'}, status=status.HTTP_404_NOT_FOUND)
           
