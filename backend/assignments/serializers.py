@@ -8,7 +8,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
           model = Assignment
           fields = ['id', 'course', 'course_name', 'title', 'description', 'due_date', 
                     'total_marks', 'created_at', 'updated_at']
-          read_only_fields = ['created_at']
+          read_only_fields = ['course', 'created_at', 'updated_at']
           
 class SubmissionSerializer(serializers.ModelSerializer):
      student_name = serializers.CharField(source='student.username', read_only=True)
@@ -19,7 +19,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
           fields = ['id', 'assignment', 'assignment_title', 'student', 'student_name', 
                     'text', 'file', 'status', 'mark_obtained', 'submitted_at']
           
-          read_only_fields = ['student', 'submitted_at', 'status', 'mark_obtained']
+          read_only_fields = ['assignment', 'student', 'submitted_at', 'status', 'mark_obtained']
           
      def validate(self, data):
           if not data.get('text') and not data.get('file'):
