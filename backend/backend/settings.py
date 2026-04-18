@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'courses',
-    'assignments'
+    'assignments',
+    'materials'
 ]
 
 MIDDLEWARE = [
