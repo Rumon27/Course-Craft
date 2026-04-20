@@ -2,122 +2,78 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Assignment, Submission
-from .serializers import AssignmentSerializer, SubmissionSerializer
+from .models import Material
+from .serializers import MaterialSerializer
 from courses.models import Course, Enrollment
 
-class AssignmentListCreateView(APIView):
+class MaterialListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        if request.user.role == 'teacher':
-            assignments = Assignment.objects.filter(course__teacher=request.user)
-        elif request.user.role == 'student':
-            enrolled_courses = Enrollment.objects.filter(student=request.user, status='approved').values_list('course', flat=True)
-            assignments = Assignment.objects.filter(course__in=enrolled_courses)
-        else:
-            assignments = Assignment.objects.all()
-        serializer = AssignmentSerializer(assignments, many=True)
+    def get(self, request, course_pk):
+        try:
+            course = Course.objects.get(pk=course_pk)
+        except Course.DoesNotExist:
+            return Response({'error': 'Course not found.'}, status=status.HTTP_404_NOT_FOUND)
+        if request.user.role == 'student':
+            enrolled = Enrollment.objects.filter(student=request.user, course=course, status='approved').exists()
+            if not enrolled:
+                return Response({'error': 'You are not enrolled in this course.'}, status=status.HTTP_403_FORBIDDEN)
+        elif request.user.role == 'teacher' and course.teacher != request.user:
+            return Response({'error': 'You do not teach this course.'}, status=status.HTTP_403_FORBIDDEN)
+        materials = Material.objects.filter(course=course)
+        serializer = MaterialSerializer(materials, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
+    def post(self, request, course_pk):
         if request.user.role != 'teacher':
-            return Response({'error': 'Only teachers can create assignments.'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = AssignmentSerializer(data=request.data)
+            return Response({'error': 'Only teachers can add materials.'}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            course = Course.objects.get(pk=course_pk)
+        except Course.DoesNotExist:
+            return Response({'error': 'Course not found.'}, status=status.HTTP_404_NOT_FOUND)
+        if course.teacher != request.user:
+            return Response({'error': 'You can only add materials to your own courses.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = MaterialSerializer(data=request.data)
         if serializer.is_valid():
-            course = serializer.validated_data['course']
-            if course.teacher != request.user:
-                return Response({'error': 'You can only create assignments for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
-            serializer.save()
+            serializer.save(course=course, uploaded_by=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AssignmentDetailView(APIView):
+class MaterialDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
+    def get(self, request, course_pk, pk):
         try:
-            assignment = Assignment.objects.get(pk=pk)
-        except Assignment.DoesNotExist:
-            return Response({'error': 'Assignment not found.'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = AssignmentSerializer(assignment)
+            material = Material.objects.get(pk=pk, course__pk=course_pk)
+        except Material.DoesNotExist:
+            return Response({'error': 'Material not found.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = MaterialSerializer(material)
         return Response(serializer.data)
 
-    def put(self, request, pk):
+    def put(self, request, course_pk, pk):
         if request.user.role != 'teacher':
-            return Response({'error': 'Only teachers can update assignments.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'Only teachers can update materials.'}, status=status.HTTP_403_FORBIDDEN)
         try:
-            assignment = Assignment.objects.get(pk=pk)
-        except Assignment.DoesNotExist:
-            return Response({'error': 'Assignment not found.'}, status=status.HTTP_404_NOT_FOUND)
-        if assignment.course.teacher != request.user:
-            return Response({'error': 'You can only update assignments for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = AssignmentSerializer(assignment, data=request.data)
+            material = Material.objects.get(pk=pk, course__pk=course_pk)
+        except Material.DoesNotExist:
+            return Response({'error': 'Material not found.'}, status=status.HTTP_404_NOT_FOUND)
+        if material.course.teacher != request.user:
+            return Response({'error': 'You can only update materials for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = MaterialSerializer(material, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
+    def delete(self, request, course_pk, pk):
         if request.user.role != 'teacher':
-            return Response({'error': 'Only teachers can delete assignments.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'Only teachers can delete materials.'}, status=status.HTTP_403_FORBIDDEN)
         try:
-            assignment = Assignment.objects.get(pk=pk)
-        except Assignment.DoesNotExist:
-            return Response({'error': 'Assignment not found.'}, status=status.HTTP_404_NOT_FOUND)
-        if assignment.course.teacher != request.user:
-            return Response({'error': 'You can only delete assignments for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
-        assignment.delete()
-        return Response({'message': 'Assignment deleted.'})
-
-
-class SubmissionListCreateView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        if request.user.role == 'teacher':
-            submissions = Submission.objects.filter(assignment__course__teacher=request.user)
-        elif request.user.role == 'student':
-            submissions = Submission.objects.filter(student=request.user)
-        else:
-            submissions = Submission.objects.all()
-        serializer = SubmissionSerializer(submissions, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        if request.user.role != 'student':
-            return Response({'error': 'Only students can submit assignments.'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = SubmissionSerializer(data=request.data)
-        if serializer.is_valid():
-            assignment = serializer.validated_data['assignment']
-            enrolled = Enrollment.objects.filter(student=request.user, course=assignment.course, status='approved').exists()
-            if not enrolled:
-                return Response({'error': 'You are not enrolled in this course.'}, status=status.HTTP_403_FORBIDDEN)
-            serializer.save(student=request.user, status='submitted')
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GradeSubmissionView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def put(self, request, pk):
-        if request.user.role != 'teacher':
-            return Response({'error': 'Only teachers can grade submissions.'}, status=status.HTTP_403_FORBIDDEN)
-        try:
-            submission = Submission.objects.get(pk=pk)
-        except Submission.DoesNotExist:
-            return Response({'error': 'Submission not found.'}, status=status.HTTP_404_NOT_FOUND)
-        if submission.assignment.course.teacher != request.user:
-            return Response({'error': 'You can only grade submissions for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
-        mark = request.data.get('mark_obtained')
-        if mark is None:
-            return Response({'error': 'mark_obtained is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        if int(mark) > submission.assignment.total_marks:
-            return Response({'error': f'Mark cannot exceed total marks ({submission.assignment.total_marks}).'}, status=status.HTTP_400_BAD_REQUEST)
-        submission.mark_obtained = mark
-        submission.status = 'graded'
-        submission.save()
-        serializer = SubmissionSerializer(submission)
-        return Response(serializer.data)
+            material = Material.objects.get(pk=pk, course__pk=course_pk)
+        except Material.DoesNotExist:
+            return Response({'error': 'Material not found.'}, status=status.HTTP_404_NOT_FOUND)
+        if material.course.teacher != request.user:
+            return Response({'error': 'You can only delete materials for your own courses.'}, status=status.HTTP_403_FORBIDDEN)
+        material.delete()
+        return Response({'message': 'Material deleted.'}, status=status.HTTP_204_NO_CONTENT)
