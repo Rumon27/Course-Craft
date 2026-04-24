@@ -40,6 +40,22 @@ CourseCraft/
 │   │   ├── serializers.py
 │   │   ├── views.py
 │   │   └── urls.py
+│   ├── assignments/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   └── urls.py
+│   ├── materials/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   └── urls.py
+│   ├── notifications/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── signals.py
+│   │   ├── views.py
+│   │   └── urls.py
 │   └── manage.py
 ├── venv/
 ├── docker-compose.yml
@@ -144,9 +160,52 @@ The API will be available at `http://localhost:8000`
 | GET | `/api/courses/<id>/` | Get course details | Yes |
 | PUT | `/api/courses/<id>/` | Update a course | Admin only |
 | DELETE | `/api/courses/<id>/` | Deactivate a course | Admin only |
+| POST | `/api/courses/<id>/complete/` | Mark course as completed | Teacher only |
 | POST | `/api/courses/enroll/` | Apply for course enrollment | Student only |
 | GET | `/api/courses/enrollments/` | List enrollments | Yes (role-filtered) |
 | PUT | `/api/courses/enrollments/<id>/` | Approve or reject enrollment | Admin only |
+
+### Assignments
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/courses/<course_id>/assignments/` | List assignments for a course | Yes |
+| POST | `/api/courses/<course_id>/assignments/` | Create an assignment | Teacher only |
+| GET | `/api/courses/<course_id>/assignments/<id>/` | Get assignment details | Yes |
+| PUT | `/api/courses/<course_id>/assignments/<id>/` | Update an assignment | Teacher only |
+| DELETE | `/api/courses/<course_id>/assignments/<id>/` | Delete an assignment | Teacher only |
+
+### Submissions
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/courses/<course_id>/assignments/<id>/submissions/` | List submissions | Yes (role-filtered) |
+| POST | `/api/courses/<course_id>/assignments/<id>/submissions/` | Submit an assignment | Student only |
+| PUT | `/api/courses/<course_id>/assignments/<id>/submissions/<id>/grade/` | Grade a submission | Teacher only |
+
+### Study Materials
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/courses/<course_id>/materials/` | List materials for a course | Yes |
+| POST | `/api/courses/<course_id>/materials/` | Add a material | Teacher only |
+| PUT | `/api/courses/<course_id>/materials/<id>/` | Update a material | Teacher only |
+| DELETE | `/api/courses/<course_id>/materials/<id>/` | Delete a material | Teacher only |
+
+### Notifications
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/notifications/` | Get my notifications | Yes |
+| PUT | `/api/notifications/<id>/read/` | Mark notification as read | Yes |
+| POST | `/api/notifications/global/` | Send global notification | Admin only |
+
+### Performance
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/performance/` | Get my performance | Student only |
+| GET | `/api/performance/<student_id>/` | Get a student's performance | Teacher/Admin only |
 
 ---
 
@@ -166,6 +225,35 @@ Authorization: Bearer <your_access_token>
 
 ---
 
+## Key Features
+
+**Admin**
+- Create and manage courses
+- Assign teachers to courses
+- Create teacher accounts
+- Approve or reject student enrollments
+- Send global notifications to all users
+
+**Teacher**
+- Create assignments inside their courses
+- Upload study materials (files or links)
+- View and grade student submissions
+- Mark a course as completed
+
+**Student**
+- Browse and apply for courses
+- View study materials of enrolled courses
+- Submit assignments (text or file)
+- View grades and performance tracking
+- Prerequisites system — must complete required courses before enrolling
+
+**Notifications**
+- Automatic notifications when a new assignment or material is posted
+- Global notifications from admin
+- Mark notifications as read
+
+---
+
 ## Docker Setup
 
 The `docker-compose.yml` sets up a PostgreSQL 15 database:
@@ -178,9 +266,9 @@ services:
     environment:
       POSTGRES_DB: coursecraft
       POSTGRES_USER: coursecraft_user
-      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_PASSWORD: coursecraft_pass
     ports:
-      - "5432:5432"
+      - "5430:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 ```
@@ -207,12 +295,12 @@ docker ps                  # Check running containers
 | `DB_HOST` | Database host (localhost for local dev) |
 | `DB_PORT` | Database port (5432) |
 
-> **Note:** Never commit your `.env` file to GitHub. It is already listed in `.gitignore`.
 
 ---
 
 ## Development Progress
 
+**Backend**
 - [x] Docker + PostgreSQL setup
 - [x] Django project setup
 - [x] Custom User model with roles
@@ -222,9 +310,22 @@ docker ps                  # Check running containers
 - [x] Course management (CRUD)
 - [x] Course enrollment with prerequisites
 - [x] Enrollment approval system
-- [ ] Assignments and submissions
-- [ ] Grading system
-- [ ] Notifications
-- [ ] Study materials
-- [ ] Frontend (React + Tailwind)
-- [ ] Deployment (Docker + Nginx + AWS)
+- [x] Assignments and submissions
+- [x] Grading system
+- [x] Study materials (files and links)
+- [x] Notifications with auto signals
+- [x] Course completion
+- [x] Student performance tracking
+
+**Frontend**
+- [ ] Project setup (React + Tailwind)
+- [ ] Auth pages (Login, Register)
+- [ ] Admin dashboard and pages
+- [ ] Teacher dashboard and pages
+- [ ] Student dashboard and pages
+- [ ] Notifications page
+
+**Deployment**
+- [ ] Nginx configuration
+- [ ] AWS deployment
+- [ ] Docker production setup
