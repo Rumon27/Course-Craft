@@ -1,4 +1,7 @@
+from ast import Return
+from turtle import title
 from rest_framework import status
+from users.models import User
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -144,3 +147,67 @@ class GradeSubmissionView(APIView):
         submission.save()
         serializer = SubmissionSerializer(submission)
         return Response(serializer.data)
+    
+    
+class StudentPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, student_id=None):
+        if request.user.role == 'student':
+            target_student = request.user
+        elif request.user.role in ['teacher', 'admin']:
+            if student_id is None:
+                return Response({'error':'Please Provide a student Id'}, status=status.HTTP_404_NOT_FOUND)
+            
+            try:
+                target_student = User.objects.get(pk = student_id, role='student')
+            except User.DoesNotExist:
+                return Response({'error':'Student not found'}, status=status.HTTP_403_FORBIDDEN)
+            
+        else:
+            return Response({'error':'No permuission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        enrollments = Enrollment.objects.filter(student = target_student, status='approved')
+        performance = []
+
+        for enrollment in enrollments:
+            course = enrollment.course
+            assignments = Assignment.objects.filter(course=course)
+            assignment_data = []
+            total_marks = 0
+            obtained_marks = 0
+            
+            for assignment in assignments:
+                submission = Submission.objects.filter(assignment=assignment, student=target_student).first()
+                assignment_data.append({
+                    'assignment_id': assignment.id,
+                    'assignment_title': assignment.title,
+                    'total_marks': assignment.total_marks,
+                    'mark_obtained': submission.mark_obtained if submission else None,
+                    'status': submission.status if submission else 'not submitted',
+                })
+                
+                total_marks += assignment.total_marks
+                
+                if submission and submission.mark_obtained is not None:
+                    obtained_marks += submission.mark_obtained
+
+                
+            performance.append({
+                'course_id': course.id,
+                'course_name': course.name,
+                'is_completed': course.is_completed,
+                'total_marks': total_marks,
+                'obtained_marks': obtained_marks,
+                'percentage': round((obtained_marks / total_marks) * 100, 2) if total_marks > 0 else 0,
+                'assignments': assignment_data,
+            })
+            
+        return Response({
+            'student': target_student.username,
+            'performance':performance
+        })
+                
+                
+                    
+        

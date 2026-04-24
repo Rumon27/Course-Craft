@@ -1,4 +1,6 @@
+from operator import truediv
 from django.shortcuts import render
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -77,7 +79,29 @@ class CourseDetailView(APIView):
           
           return Response({'message': 'Course deactivated.'})
      
-               
+class CourseCompleteView(APIView):
+     permission_classes = [IsAuthenticated]
+     
+     def post(self, request, pk):
+          if request.user.role != 'teacher':
+               return Response({'error':'Only Teachers can end course'}, status=status.HTTP_403_FORBIDDEN)             
+
+          try:
+               course = Course.objects.get(pk=pk)
+          except Course.DoesNotExist:
+               return Response({'error':'Course Not Found'}, status=status.HTTP_404_NOT_FOUND)
+          
+          if course.teacher != request.user:
+               return Response({'error':'You can complete only your course'}, status=status.HTTP_403_FORBIDDEN)
+          
+          if course.is_completed:
+               return Response({'error':'Course is already completed'}, status=status.HTTP_400_BAD_REQUEST)
+
+          course.is_completed = True
+          course.completed_at = timezone.now()
+          course.save()
+
+          return Response({'message':f'Course "{course.name} has been marked as completed"'}, status=status.HTTP_200_OK)
 
 class EnrollmentView(APIView):
      permission_classes = [IsAuthenticated]

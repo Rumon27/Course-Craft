@@ -1,3 +1,5 @@
+from operator import truediv
+from pyexpat import model
 from django.db import models
 from users.models import User
 
@@ -16,6 +18,9 @@ class Course(models.Model):
      is_active = models.BooleanField(default=True)
      
      created_at = models.DateTimeField(auto_now_add=True)
+     
+     is_completed = models.BooleanField(default=False)
+     completed_at = models.DateTimeField(null=True, blank = True)
      
      def __str__(self):
           return self.name
