@@ -13,6 +13,12 @@ A web-based course management platform for administrators, teachers, and student
 - SimpleJWT (JWT Authentication)
 - django-cors-headers
 
+**Frontend**
+- React (Vite)
+- Tailwind CSS
+- Axios
+- React Router DOM
+
 **Database**
 - PostgreSQL 15 (running via Docker)
 
@@ -31,32 +37,33 @@ CourseCraft/
 │   │   ├── urls.py
 │   │   └── wsgi.py
 │   ├── users/
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   └── urls.py
 │   ├── courses/
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   └── urls.py
 │   ├── assignments/
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   └── urls.py
 │   ├── materials/
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   └── urls.py
 │   ├── notifications/
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── signals.py
-│   │   ├── views.py
-│   │   └── urls.py
 │   └── manage.py
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── axios.js
+│   │   ├── components/
+│   │   │   └── Navbar.jsx
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── admin/
+│   │   │   │   ├── Register.jsx
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── Courses.jsx
+│   │   │   │   ├── Teachers.jsx
+│   │   │   │   ├── Enrollments.jsx
+│   │   │   │   └── Notifications.jsx
+│   │   │   ├── teacher/
+│   │   │   └── student/
+│   │   └── App.jsx
+│   └── package.json
 ├── venv/
 ├── docker-compose.yml
 ├── requirements.txt
@@ -69,23 +76,26 @@ CourseCraft/
 
 ### Prerequisites
 - Python 3.14+
+- Node.js 18+
 - Docker Desktop
 - Git
 
-### 1. Clone the repository
+### Backend Setup
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/CourseCraft.git
 cd CourseCraft
 ```
 
-### 2. Start the PostgreSQL database
+#### 2. Start the PostgreSQL database
 
 ```bash
 docker-compose up -d
 ```
 
-### 3. Create and activate virtual environment
+#### 3. Create and activate virtual environment
 
 ```bash
 python -m venv venv
@@ -93,13 +103,13 @@ venv\Scripts\activate        # Windows
 source venv/bin/activate     # Mac/Linux
 ```
 
-### 4. Install dependencies
+#### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Set up environment variables
+#### 5. Set up environment variables
 
 Create a `.env` file inside the `backend/` folder:
 
@@ -113,14 +123,14 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-### 6. Run migrations
+#### 6. Run migrations
 
 ```bash
 cd backend
 python manage.py migrate
 ```
 
-### 7. Start the development server
+#### 7. Start the backend server
 
 ```bash
 python manage.py runserver
@@ -130,12 +140,36 @@ The API will be available at `http://localhost:8000`
 
 ---
 
+### Frontend Setup
+
+#### 1. Navigate to frontend folder
+
+```bash
+cd frontend
+```
+
+#### 2. Install dependencies
+
+```bash
+npm install
+```
+
+#### 3. Start the development server
+
+```bash
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173`
+
+---
+
 ## User Roles
 
 | Role | Registration | Created By |
 |------|-------------|------------|
-| Admin | Self-register | Themselves |
-| Student | Self-register | Themselves |
+| Admin | `/admin/register` | Themselves |
+| Student | `/register` | Themselves |
 | Teacher | Cannot self-register | Admin only |
 
 ---
@@ -150,6 +184,7 @@ The API will be available at `http://localhost:8000`
 | POST | `/api/users/login/` | Login and get JWT tokens | No |
 | POST | `/api/users/token/refresh/` | Refresh access token | No |
 | POST | `/api/users/create-teacher/` | Create a teacher account | Admin only |
+| GET | `/api/users/teachers/` | List all teachers | Admin only |
 
 ### Courses
 
@@ -217,46 +252,11 @@ After logging in, you receive:
 - `access` token — include in every request header
 - `refresh` token — use to get a new access token when it expires
 
-**How to use the access token in requests:**
-
-```
-Authorization: Bearer <your_access_token>
-```
-
----
-
-## Key Features
-
-**Admin**
-- Create and manage courses
-- Assign teachers to courses
-- Create teacher accounts
-- Approve or reject student enrollments
-- Send global notifications to all users
-
-**Teacher**
-- Create assignments inside their courses
-- Upload study materials (files or links)
-- View and grade student submissions
-- Mark a course as completed
-
-**Student**
-- Browse and apply for courses
-- View study materials of enrolled courses
-- Submit assignments (text or file)
-- View grades and performance tracking
-- Prerequisites system — must complete required courses before enrolling
-
-**Notifications**
-- Automatic notifications when a new assignment or material is posted
-- Global notifications from admin
-- Mark notifications as read
+Tokens are automatically managed by the Axios interceptor in `frontend/src/api/axios.js`.
 
 ---
 
 ## Docker Setup
-
-The `docker-compose.yml` sets up a PostgreSQL 15 database:
 
 ```yaml
 services:
@@ -266,9 +266,9 @@ services:
     environment:
       POSTGRES_DB: coursecraft
       POSTGRES_USER: coursecraft_user
-      POSTGRES_PASSWORD: coursecraft_pass
+      POSTGRES_PASSWORD: yourpassword
     ports:
-      - "5430:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 ```
@@ -295,6 +295,7 @@ docker ps                  # Check running containers
 | `DB_HOST` | Database host (localhost for local dev) |
 | `DB_PORT` | Database port (5432) |
 
+> **Note:** Never commit your `.env` file to GitHub. It is already listed in `.gitignore`.
 
 ---
 
@@ -318,12 +319,26 @@ docker ps                  # Check running containers
 - [x] Student performance tracking
 
 **Frontend**
-- [ ] Project setup (React + Tailwind)
-- [ ] Auth pages (Login, Register)
-- [ ] Admin dashboard and pages
-- [ ] Teacher dashboard and pages
-- [ ] Student dashboard and pages
-- [ ] Notifications page
+- [x] Project setup (React + Vite + Tailwind)
+- [x] Axios setup with JWT interceptor
+- [x] Auth context and protected routes
+- [x] Login page
+- [x] Student register page
+- [x] Admin register page
+- [x] Admin dashboard
+- [x] Admin manage courses
+- [x] Admin manage teachers
+- [x] Admin manage enrollments
+- [x] Admin send Global notifications
+- [ ] Teacher dashboard
+- [ ] Teacher manage assignments
+- [ ] Teacher manage materials
+- [ ] Teacher grade submissions
+- [ ] Student dashboard
+- [ ] Student browse and enroll in courses
+- [ ] Student view assignments and submit
+- [ ] Student view grades and performance
+- [ ] Shared notifications page
 
 **Deployment**
 - [ ] Nginx configuration

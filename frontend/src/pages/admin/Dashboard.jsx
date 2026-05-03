@@ -44,7 +44,10 @@ function AdminDashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 transform transition-hover hover:shadow-md">
+          <div 
+            onClick={() => navigate('/admin/courses/')}
+            className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 transform transition-hover hover:shadow-md cursor-pointer"
+          >
             <p className="text-sm font-bold text-indigo-600 uppercase tracking-wider mb-2">Total Courses</p>
             <p className="text-5xl font-black text-slate-900">{courses.length}</p>
           </div>
@@ -52,7 +55,10 @@ function AdminDashboard() {
             <p className="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2">Total Enrollments</p>
             <p className="text-5xl font-black text-slate-900">{enrollments.length}</p>
           </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 transform transition-hover hover:shadow-md">
+          <div 
+            onClick={() => navigate('/admin/enrollments/')}
+            className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 transform transition-hover hover:shadow-md cursor-pointer"
+          >
             <p className="text-sm font-bold text-amber-500 uppercase tracking-wider mb-2">Pending Requests</p>
             <p className="text-5xl font-black text-slate-900">{pendingEnrollments.length}</p>
           </div>
@@ -66,15 +72,19 @@ function AdminDashboard() {
             <div className="bg-slate-900 rounded-2xl shadow-xl p-8 text-white">
               <h3 className="text-xl font-bold mb-6">Quick Management</h3>
               <div className="space-y-4">
-                <button onClick={() => navigate('/admin/courses')} className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-xl transition-all border border-white/10 flex justify-between items-center group">
-                  <span>Courses</span>
+                <button onClick={() => navigate('/admin/courses/')} className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-xl transition-all border border-white/10 flex justify-between items-center group">
+                  <span>Manage Courses</span>
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </button>
-                <button onClick={() => navigate('/admin/teachers')} className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-xl transition-all border border-white/10 flex justify-between items-center group">
-                  <span>Teachers</span>
+                <button onClick={() => navigate('/admin/manageteachers/')} className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-xl transition-all border border-white/10 flex justify-between items-center group">
+                  <span>Manage Teachers</span>
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </button>
-                <button onClick={() => navigate('/admin/enrollments')} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-900/40">
+                <button onClick={() => navigate('/admin/notifications/')} className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-4 rounded-xl transition-all border border-white/10 flex justify-between items-center group">
+                  <span>Global Notifications</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                </button>
+                <button onClick={() => navigate('/admin/enrollments/')} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-indigo-900/40 mt-4">
                   Manage Enrollments
                 </button>
               </div>
