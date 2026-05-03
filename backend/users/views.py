@@ -1,10 +1,11 @@
-from django.shortcuts import render
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.utils import serializer_helpers
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from .serializers import RegisterSerializer, TeacherCreateSerializer, UserSerializer
 
 class RegisterView(APIView):
@@ -47,4 +48,15 @@ class CreateTeacherView(APIView):
           return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-     
+User = get_user_model()
+class TeachersList(APIView):
+     permission_classes = [IsAuthenticated]
+
+     def get(self, request):
+          if request.user.role != 'admin':
+               return Response({'error': 'Only admins can see teachers.'}, status=status.HTTP_403_FORBIDDEN)
+          
+          teachers = User.objects.filter(role='teacher')
+          serializer = UserSerializer(teachers, many=True)
+
+          return Response(serializer.data)
