@@ -48,21 +48,27 @@ CourseCraft/
 │   │   │   └── axios.js
 │   │   ├── components/
 │   │   │   └── Navbar.jsx
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx
-│   │   ├── pages/
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── admin/
-│   │   │   │   ├── Register.jsx
+│   │   ├── context/            # Global state management
+│   │   │   └── AuthContext.jsx # Authentication state provider
+│   │   ├── pages/              # Application views
+│   │   │   ├── Login.jsx       # Student/General Login
+│   │   │   ├── Register.jsx    # Student Registration
+│   │   │   ├── admin/          # Admin-Specific Pages
 │   │   │   │   ├── Dashboard.jsx
-│   │   │   │   ├── Courses.jsx
-│   │   │   │   ├── Teachers.jsx
-│   │   │   │   ├── Enrollments.jsx
-│   │   │   │   └── Notifications.jsx
-│   │   │   ├── teacher/
-│   │   │   └── student/
-│   │   └── App.jsx
+│   │   │   │   ├── AdminCourses.jsx
+│   │   │   │   ├── AdminNotifications.jsx
+│   │   │   │   ├── LoginAdmin.jsx
+│   │   │   │   ├── ManageEnrollments.jsx
+│   │   │   │   ├── ManageTeachers.jsx
+│   │   │   │   └── RegisterAdmin.jsx
+│   │   │   ├── teacher/        # Teacher-Specific Pages
+│   │   │   │   ├── TeacherDashboard.jsx
+│   │   │   │   ├── TeacherCourses.jsx
+│   │   │   │   ├── TeacherAssignments.jsx
+│   │   │   │   ├── TeacherMaterials.jsx   # New: Manage study links/files
+│   │   │   │   └── TeacherSubmissions.jsx # New: Grade student work
+│   │   │   └── student/        # Student-Specific Pages (In Progress)
+│   │   └── App.jsx             # Main router and layout
 │   └── package.json
 ├── venv/
 ├── docker-compose.yml
@@ -84,21 +90,21 @@ CourseCraft/
 
 #### 1. Clone the repository
 
-```bash
-git clone https://github.com/YOUR_USERNAME/CourseCraft.git
-cd CourseCraft
-```
+    ```bash
+    git clone https://github.com/Rumon27/Course-Craft.git
+    cd coursecraft
+    ```
 
 #### 2. Start the PostgreSQL database
 
-```bash
-docker-compose up -d
-```
+    ```bash
+    docker-compose up -d
+    ```
 
 #### 3. Create and activate virtual environment
 
-```bash
-python -m venv venv
+    ```bash
+    python -m venv venv
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # Mac/Linux
 ```
@@ -106,8 +112,8 @@ source venv/bin/activate     # Mac/Linux
 #### 4. Install dependencies
 
 ```bash
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
+    ```
 
 #### 5. Set up environment variables
 
@@ -115,26 +121,26 @@ Create a `.env` file inside the `backend/` folder:
 
 ```
 SECRET_KEY=your-secret-key-here
-DEBUG=True
-DB_NAME=coursecraft
-DB_USER=coursecraft_user
-DB_PASSWORD=yourpassword
-DB_HOST=localhost
-DB_PORT=5432
-```
+    DEBUG=True
+    DB_NAME=coursecraft
+    DB_USER=coursecraft_user
+    DB_PASSWORD=yourpassword
+    DB_HOST=localhost
+    DB_PORT=5432
+    ```
 
 #### 6. Run migrations
 
-```bash
-cd backend
-python manage.py migrate
+    ```bash
+    cd backend
+    python manage.py migrate
 ```
 
 #### 7. Start the backend server
 
 ```bash
-python manage.py runserver
-```
+    python manage.py runserver
+    ```
 
 The API will be available at `http://localhost:8000`
 
@@ -144,21 +150,21 @@ The API will be available at `http://localhost:8000`
 
 #### 1. Navigate to frontend folder
 
-```bash
-cd frontend
+    ```bash
+    cd frontend
 ```
 
 #### 2. Install dependencies
 
 ```bash
-npm install
-```
+    npm install
+    ```
 
 #### 3. Start the development server
 
-```bash
-npm run dev
-```
+    ```bash
+    npm run dev
+    ```
 
 The frontend will be available at `http://localhost:5173`
 

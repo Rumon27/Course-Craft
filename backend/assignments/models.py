@@ -23,8 +23,7 @@ class Submission(models.Model):
           ('graded', 'Graded'),
 
      ]
-
-     
+    
      assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name="submissions")
      student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submissions")
      text = models.TextField(blank = True, null = True)

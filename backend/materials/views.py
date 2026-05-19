@@ -28,9 +28,9 @@ class MaterialListCreateView(APIView):
                     return Response({'error':'You do not teach this course'}, status=status.HTTP_403_FORBIDDEN)
           
           materials = Material.objects.filter(course=course)
-          serializer = MaterialSerializer(materials, many=True)
+          serializer = MaterialSerializer(materials, many=True, context={'request': request})
           return Response(serializer.data)
-
+     
      def post(self, request, course_pk):
           try:
                course = Course.objects.get(pk=course_pk)
@@ -45,7 +45,7 @@ class MaterialListCreateView(APIView):
                return Response({'error':'You can Only add materials to your courses'}, 
                                status=status.HTTP_403_FORBIDDEN)
 
-          serializer = MaterialSerializer(data=request.data)
+          serializer = MaterialSerializer(data=request.data , context={'request': request})
 
           if serializer.is_valid():
                serializer.save(course= course, uploaded_by=request.user)
@@ -71,7 +71,7 @@ class MaterialUpdate(APIView):
                                status=status.HTTP_403_FORBIDDEN)
                
                
-          serializer = MaterialSerializer(material,data=request.data, partial= True)
+          serializer = MaterialSerializer(material,data=request.data, partial= True, context={'request': request})
           if serializer.is_valid():
                serializer.save()
                return Response(serializer.data)

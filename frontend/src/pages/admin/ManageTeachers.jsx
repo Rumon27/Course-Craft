@@ -12,6 +12,10 @@ const ManageTeachers = () => {
           password: "",
      });
 
+     useEffect(() => {
+          fetchTeachers();
+     }, []);
+     
      const [error, setError] = useState("");
      const [teacherAssigned, setTeacherAssigned] = useState("");
 
@@ -26,9 +30,7 @@ const ManageTeachers = () => {
           }
      };
 
-     useEffect(() => {
-          fetchTeachers();
-     }, []);
+     
 
      const handleSubmit = async (e) => {
           e.preventDefault();

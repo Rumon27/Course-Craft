@@ -90,6 +90,7 @@ class SubmissionListCreateView(APIView):
             assignment = Assignment.objects.get(pk=pk, course__pk=course_pk)
         except Assignment.DoesNotExist:
             return Response({'error': 'Assignment not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
         if request.user.role == 'teacher':
             if assignment.course.teacher != request.user:
                 return Response({'error': 'You do not teach this course.'}, status=status.HTTP_403_FORBIDDEN)
@@ -98,6 +99,7 @@ class SubmissionListCreateView(APIView):
             submissions = Submission.objects.filter(assignment=assignment, student=request.user)
         else:
             submissions = Submission.objects.filter(assignment=assignment)
+            
         serializer = SubmissionSerializer(submissions, many=True)
         return Response(serializer.data)
 

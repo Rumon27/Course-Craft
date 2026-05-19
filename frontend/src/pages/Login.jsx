@@ -20,7 +20,7 @@ const Login = () => {
                const res = await api.post("users/login/", { username: userName, password });
 
                const role = res.data.user.role;
-               login(res.data, res.data.access, res.data.refresh);
+               login(res.data.user, res.data.access, res.data.refresh);
 
                if (role === "admin") {
                     navigate("/admin/dashboard");

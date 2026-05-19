@@ -133,7 +133,7 @@ function AdminDashboard() {
                         <td className="px-8 py-5 text-sm text-slate-500">{course.teacher_name || 'Not Assigned'}</td>
                         <td className="px-8 py-5">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${course.is_completed ? 'bg-slate-100 text-slate-500' : 'bg-emerald-100 text-emerald-700'}`}>
-                            {course.is_completed ? 'Archive' : 'Active'}
+                            {course.is_completed ? 'Completed' : 'Active'}
                           </span>
                         </td>
                       </tr>

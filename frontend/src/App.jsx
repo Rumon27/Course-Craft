@@ -5,11 +5,15 @@ import Register from "./pages/Register";
 import RegisterAdmin from "./pages/admin/RegisterAdmin";
 import Navbar from "./components/Navbar";
 import AdminDashboard from "./pages/admin/Dashboard";
-import TeacherDashboard from "./pages/teacher/Dashboard";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import AdminCourses from "./pages/admin/AdminCourses";
 import ManageTeachers from "./pages/admin/ManageTeachers";
 import ManageEnrollments from "./pages/admin/ManageEnrollments";
 import AdminNotifications from "./pages/admin/AdminNotifications";
+import TeacherCourses from "./pages/teacher/TeacherCourses";
+import TeacherAssignments from "./pages/teacher/TeacherAssignments";
+import TeacherMaterials from "./pages/teacher/TeacherMaterials";
+import TeacherSubmissions from "./pages/teacher/TeacherSubmissions";
 
 // Dashboard components
 const StudentDashboard = () => (
@@ -54,52 +58,40 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route 
+        <Route
           path="/admin/courses/"
           element={
             <PrivateRoute>
-              <AdminCourses/>
+              <AdminCourses />
             </PrivateRoute>
           }
         />
-        <Route 
+        <Route
           path="/admin/enrollments/"
           element={
             <PrivateRoute>
-              <ManageEnrollments/>
+              <ManageEnrollments />
             </PrivateRoute>
           }
         />
-        <Route 
+        <Route
           path="/admin/manageteachers/"
           element={
             <PrivateRoute>
-              <ManageTeachers/>
+              <ManageTeachers />
             </PrivateRoute>
           }
         />
-        <Route 
+        <Route
           path="/admin/notifications/"
           element={
             <PrivateRoute>
-              <AdminNotifications/>
+              <AdminNotifications />
             </PrivateRoute>
           }
         />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        {/*Teacher Stuffs*/}
 
         <Route
           path="/teacher/dashboard/"
@@ -109,6 +101,46 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/teacher/courses/"
+          element={
+            <PrivateRoute>
+              <TeacherCourses />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/courses/:courseID/assignments/"
+          element={
+            <PrivateRoute>
+              <TeacherAssignments />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/courses/:courseID/materials/"
+          element={
+            <PrivateRoute>
+              <TeacherMaterials />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/courses/:courseID/submissions/"
+          element={
+            <PrivateRoute>
+              <TeacherSubmissions />
+            </PrivateRoute>
+          }
+        />
+
+
+
+
         <Route
           path="/student/dashboard/"
           element={

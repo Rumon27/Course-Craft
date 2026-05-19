@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
-import Navbar from "../../components/Navbar";
+
 
 const AdminCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -17,6 +17,10 @@ const AdminCourses = () => {
     prerequisites: [],
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchData = async () => {
     try {
       const [registeredCourse, RegisteredTeachers] = await Promise.all([
@@ -32,9 +36,7 @@ const AdminCourses = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
