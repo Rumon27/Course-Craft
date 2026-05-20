@@ -15,11 +15,11 @@ import TeacherAssignments from "./pages/teacher/TeacherAssignments";
 import TeacherMaterials from "./pages/teacher/TeacherMaterials";
 import TeacherSubmissions from "./pages/teacher/TeacherSubmissions";
 import TSNotifications from "./pages/TSNotifications";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import BrowseCourses from "./pages/student/BrowseCourses";
 
 // Dashboard components
-const StudentDashboard = () => (
-  <div className="p-10 text-2xl font-bold">Student Dashboard</div>
-);
+
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -163,6 +163,15 @@ function App() {
             <TSNotifications />
           </PrivateRoute>
         } />
+
+        <Route
+          path="/student/courses/"
+          element={
+            <PrivateRoute>
+              <BrowseCourses />
+            </PrivateRoute>
+          }
+        />
 
         {/* Default Redirect */}
         <Route path="/" element={<Navigate to="/login/" replace />} />
