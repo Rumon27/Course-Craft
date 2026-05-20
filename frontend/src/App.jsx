@@ -17,7 +17,7 @@ import TeacherSubmissions from "./pages/teacher/TeacherSubmissions";
 import TSNotifications from "./pages/TSNotifications";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import BrowseCourses from "./pages/student/BrowseCourses";
-
+import StudentsCourses from "./pages/student/StudentsCourses";
 // Dashboard components
 
 
@@ -169,6 +169,15 @@ function App() {
           element={
             <PrivateRoute>
               <BrowseCourses />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/student/mycourses/"
+          element={
+            <PrivateRoute>
+              <StudentsCourses />
             </PrivateRoute>
           }
         />
