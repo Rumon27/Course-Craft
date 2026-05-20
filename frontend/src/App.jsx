@@ -14,6 +14,7 @@ import TeacherCourses from "./pages/teacher/TeacherCourses";
 import TeacherAssignments from "./pages/teacher/TeacherAssignments";
 import TeacherMaterials from "./pages/teacher/TeacherMaterials";
 import TeacherSubmissions from "./pages/teacher/TeacherSubmissions";
+import TSNotifications from "./pages/TSNotifications";
 
 // Dashboard components
 const StudentDashboard = () => (
@@ -138,8 +139,15 @@ function App() {
           }
         />
 
+        <Route path="/teacher/notifications" element={
+          <PrivateRoute>
+            <TSNotifications />
+          </PrivateRoute>
+        } />
 
 
+
+        {/*STUDNET SERIES */}
 
         <Route
           path="/student/dashboard/"
@@ -149,6 +157,12 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route path="/student/notifications" element={
+          <PrivateRoute>
+            <TSNotifications />
+          </PrivateRoute>
+        } />
 
         {/* Default Redirect */}
         <Route path="/" element={<Navigate to="/login/" replace />} />

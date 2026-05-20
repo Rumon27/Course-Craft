@@ -51,7 +51,7 @@ const Navbar = () => {
               <>
                 {/* Common Links */}
                 <Link
-                  to="/notifications/"
+                  to={user?.role === "admin" ? "/admin/notifications/" : `/${user?.role}/notifications`}
                   className="text-slate-300 hover:text-white px-3 py-2 text-sm font-semibold transition-colors flex items-center"
                 >
                   Notifications
