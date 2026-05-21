@@ -48,12 +48,14 @@ CourseCraft/
 │   │   │   └── axios.js
 │   │   ├── components/
 │   │   │   └── Navbar.jsx
-│   │   ├── context/            # Global state management
-│   │   │   └── AuthContext.jsx # Authentication state provider
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
 │   │   ├── pages/              # Application views
-│   │   │   ├── Login.jsx       # Student/General Login
-│   │   │   ├── Register.jsx    # Student Registration
-│   │   │   ├── admin/          # Admin-Specific Pages
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Notifications.jsx
+│   │   │   ├── TSNotifications.jsx
+│   │   │   ├── admin/
 │   │   │   │   ├── Dashboard.jsx
 │   │   │   │   ├── AdminCourses.jsx
 │   │   │   │   ├── AdminNotifications.jsx
@@ -61,14 +63,23 @@ CourseCraft/
 │   │   │   │   ├── ManageEnrollments.jsx
 │   │   │   │   ├── ManageTeachers.jsx
 │   │   │   │   └── RegisterAdmin.jsx
-│   │   │   ├── teacher/        # Teacher-Specific Pages
+│   │   │   ├── teacher/
 │   │   │   │   ├── TeacherDashboard.jsx
 │   │   │   │   ├── TeacherCourses.jsx
 │   │   │   │   ├── TeacherAssignments.jsx
-│   │   │   │   ├── TeacherMaterials.jsx   # New: Manage study links/files
-│   │   │   │   └── TeacherSubmissions.jsx # New: Grade student work
-│   │   │   └── student/        # Student-Specific Pages (In Progress)
-│   │   └── App.jsx             # Main router and layout
+│   │   │   │   ├── TeacherMaterials.jsx
+│   │   │   │   └── TeacherSubmissions.jsx
+│   │   │   └── student/
+│   │   │       ├── StudentDashboard.jsx
+│   │   │       ├── StudentAssignments.jsx
+│   │   │       ├── StudentMaterials.jsx
+│   │   │       ├── StudentPerformance.jsx
+│   │   │       ├── BrowseCourses.jsx
+│   │   │       └── StudentsCourses.jsx
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
 │   └── package.json
 ├── venv/
 ├── docker-compose.yml
@@ -328,23 +339,11 @@ docker ps                  # Check running containers
 - [x] Project setup (React + Vite + Tailwind)
 - [x] Axios setup with JWT interceptor
 - [x] Auth context and protected routes
-- [x] Login page
-- [x] Student register page
-- [x] Admin register page
-- [x] Admin dashboard
-- [x] Admin manage courses
-- [x] Admin manage teachers
-- [x] Admin manage enrollments
-- [x] Admin send Global notifications
-- [ ] Teacher dashboard
-- [ ] Teacher manage assignments
-- [ ] Teacher manage materials
-- [ ] Teacher grade submissions
-- [ ] Student dashboard
-- [ ] Student browse and enroll in courses
-- [ ] Student view assignments and submit
-- [ ] Student view grades and performance
-- [ ] Shared notifications page
+- [x] Login & Register pages
+- [x] Admin dashboard, courses, teachers, enrollments, notifications
+- [x] Teacher dashboard, courses, assignments, materials, grading
+- [x] Student dashboard, browse/enroll, assignments, materials, performance
+- [x] Shared notifications page
 
 **Deployment**
 - [ ] Nginx configuration
