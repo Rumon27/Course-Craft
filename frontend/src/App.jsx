@@ -18,6 +18,9 @@ import TSNotifications from "./pages/TSNotifications";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import BrowseCourses from "./pages/student/BrowseCourses";
 import StudentsCourses from "./pages/student/StudentsCourses";
+import StudentAssignments from './pages/student/StudentAssignments'
+import StudentMaterials from "./pages/student/StudentMaterials";
+import StudentPerformance from "./pages/student/StudentPerformance";
 // Dashboard components
 
 
@@ -134,6 +137,15 @@ function App() {
           path="/teacher/courses/:courseID/submissions/"
           element={
             <PrivateRoute>
+              <TeacherAssignments />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/courses/:courseID/assignments/:assignmentID/submissions"
+          element={
+            <PrivateRoute>
               <TeacherSubmissions />
             </PrivateRoute>
           }
@@ -181,6 +193,31 @@ function App() {
             </PrivateRoute>
           }
         />
+
+         <Route
+           path="/student/courses/:courseID/materials"
+           element={
+             <PrivateRoute>
+               <StudentMaterials />
+             </PrivateRoute>
+           }
+         />
+
+        <Route path="/student/courses/:courseId/assignments" element={
+          <PrivateRoute>
+            <StudentAssignments />
+          </PrivateRoute>
+        } />
+
+
+        <Route
+           path="/student/performance"
+           element={
+             <PrivateRoute>
+               <StudentPerformance />
+             </PrivateRoute>
+           }
+         />
 
         {/* Default Redirect */}
         <Route path="/" element={<Navigate to="/login/" replace />} />

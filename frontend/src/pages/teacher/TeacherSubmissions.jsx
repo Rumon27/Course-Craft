@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 
 function TeacherSubmissions() {
-     const { courseId, assignmentId } = useParams()
+     const { courseID: courseId, assignmentID: assignmentId } = useParams()
      const [submissions, setSubmissions] = useState([])
      const [assignment, setAssignment] = useState(null)
      const [loading, setLoading] = useState(true)

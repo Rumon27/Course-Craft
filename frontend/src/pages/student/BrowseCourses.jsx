@@ -13,7 +13,7 @@ const BrowseCourses = () => {
 
      useEffect(() => {
           fetchData()
-     })
+     }, [])
 
      const fetchData = async () => {
           try{

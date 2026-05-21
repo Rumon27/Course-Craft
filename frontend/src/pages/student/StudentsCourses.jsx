@@ -13,7 +13,7 @@ const StudentsCourses = () => {
      useEffect(() => {
           const fetchData = async () => {
                try {
-                    const res = await api.get(`course/enrollments/`)
+                    const res = await api.get(`courses/enrollments/`)
                     setEnrollments(res.data.filter(e => e.status === 'approved'))
                }
                catch (err) {

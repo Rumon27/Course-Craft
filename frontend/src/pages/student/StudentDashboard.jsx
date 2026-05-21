@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import api from "../../api/axios"
 
@@ -73,22 +73,23 @@ const StudentDashboard = () => {
                                         Browse Courses
                                    </button>
                                    <button
-                                        onClick={() => navigate('/student/my-courses')}
+                                        onClick={() => navigate('/student/mycourses')}
                                         className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
                                    >
                                         My Courses
                                    </button>
-                                   <button
-                                        onClick={() => navigate('/student/performance')}
-                                        className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
-                                   >
-                                        My Performance
-                                   </button>
+
                                    <button
                                         onClick={() => navigate('/student/notifications')}
                                         className="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 transition"
                                    >
                                         Notifications
+                                   </button>
+                                   <button
+                                        onClick={() => navigate('/student/performance')}
+                                        className="w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 transition"
+                                   >
+                                        Performance
                                    </button>
                               </div>
                          </div>
@@ -103,7 +104,7 @@ const StudentDashboard = () => {
                                         {approved.map(enrollment => (
                                              <div
                                                   key={enrollment.id}
-                                                  onClick={() => navigate(`/student/courses/${enrollment.course}`)}
+                                                  onClick={() => navigate('/student/mycourses')}
                                                   className="flex justify-between items-center border-b pb-2 cursor-pointer hover:bg-gray-50 px-2 rounded"
                                              >
                                                   <p className="text-sm font-medium">{enrollment.course_name}</p>
