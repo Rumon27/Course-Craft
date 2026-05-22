@@ -1,9 +1,0 @@
-{
-  "build": {
-    "predockerCommand": "echo \"No predocker command needed\""
-  },
-  "deploy": {
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
-  }
-}
