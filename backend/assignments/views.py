@@ -1,5 +1,3 @@
-from ast import Return
-from turtle import title
 from rest_framework import status
 from users.models import User
 from rest_framework.response import Response
