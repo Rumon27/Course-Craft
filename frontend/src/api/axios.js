@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const BASE_URL = 'https://coursecraft-uya7.onrender.com/api/'
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  baseURL: BASE_URL,
 })
 
 api.interceptors.request.use((config) => {
@@ -21,7 +23,7 @@ api.interceptors.response.use(
       const refresh = localStorage.getItem('refresh_token')
       if (refresh) {
         try {
-          const res = await axios.post('http://localhost:8000/api/users/token/refresh/', { refresh })
+          const res = await axios.post(`${BASE_URL}users/token/refresh/`, { refresh })
           localStorage.setItem('access_token', res.data.access)
           original.headers.Authorization = `Bearer ${res.data.access}`
           return api(original)
