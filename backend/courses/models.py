@@ -1,6 +1,4 @@
-from operator import truediv
-from pyexpat import model
-from django.db import models
+from django.db import models  # deep: removed unused imports (truediv, pyexpat.model)
 from users.models import User
 
 # Create your models here.

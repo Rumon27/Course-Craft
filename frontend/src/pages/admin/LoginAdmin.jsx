@@ -4,7 +4,7 @@ import api from "../../api/axios";
 import { Link, useNavigate } from "react-router-dom";
 
 const LoginAdmin = () => {
-  const [userName, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // deep: renamed state variable to match API field name
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ const LoginAdmin = () => {
     setLoading(true);
 
     try {
-      const res = await api.post("/users/login", { userName, password });
+      const res = await api.post("/users/login", { username, password }); // deep: fixed field name (userName -> username)
       
       // Security check: Ensure only admins can use this door
       if (res.data.user.role !== "admin") {
@@ -25,10 +25,10 @@ const LoginAdmin = () => {
         return;
       }
 
-      login(res.data, res.data.access, res.data.refresh);
+      login(res.data.user, res.data.access, res.data.refresh); // deep: fixed passing entire res.data instead of res.data.user
       navigate("/admin/dashboard");
     } catch (err) {
-      setError(err);
+      setError(err.response?.data?.error || "Login failed"); // deep: fixed Error object rendering as [object Object]
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ const LoginAdmin = () => {
             <label className="block text-sm font-semibold text-slate-200 mb-2">Admin Username</label>
             <input
               type="text"
-              value={userName}
+              value={username} // deep: updated to match renamed state variable
               placeholder="Admin ID"
               required
               className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all"

@@ -137,7 +137,7 @@ function App() {
           path="/teacher/courses/:courseID/submissions/"
           element={
             <PrivateRoute>
-              <TeacherAssignments />
+              <TeacherSubmissions /> {/* deep: fixed component from TeacherAssignments to TeacherSubmissions */}
             </PrivateRoute>
           }
         />

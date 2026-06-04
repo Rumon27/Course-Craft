@@ -1,6 +1,4 @@
-from pyexpat import model
-from random import choices
-from django.db import models
+from django.db import models  # deep: removed unused imports (pyexpat.model, random.choices)
 from users.models import User
 from courses.models import Course
 # Create your models here.

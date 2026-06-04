@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://coursecraft-uya7.onrender.com/api/'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/' // deep: replaced hardcoded production URL with env var
 
 const api = axios.create({
   baseURL: BASE_URL,
