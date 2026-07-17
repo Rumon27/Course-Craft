@@ -54,10 +54,10 @@ const BrowseCourses = () => {
                setMessage('Enrollment request sent. LOGIN TO ADMIN TO VERIFY')
                fetchData()
           }
-          catch(err)
-          {
-               setError('something is wrong. CHECK BROWSE COURSES')
-          }
+           catch(err)
+           {
+                setError(err.response?.data?.error || 'something is wrong. CHECK BROWSE COURSES')
+           }
 
 
      }
@@ -102,13 +102,25 @@ const BrowseCourses = () => {
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 mb-3">{course.description}</p>
+                  {course.prerequisite_details && course.prerequisite_details.length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-xs font-medium text-gray-500">Prerequisites:</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {course.prerequisite_details.map(p => (
+                          <span key={p.id} className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                            {p.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <p className="text-xs text-gray-400 mb-4">
                     Teacher: {course.teacher_name || 'Unassigned'}
                   </p>
 
                   {enrollmentStatus === 'approved' && (
                     <button
-                      onClick={() => navigate(`/student/courses/${course.id}`)}
+                      onClick={() => navigate('/student/mycourses')} 
                       className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition text-sm"
                     >
                       Go to Course

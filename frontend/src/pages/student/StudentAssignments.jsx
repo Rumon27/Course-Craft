@@ -9,6 +9,7 @@ function StudentAssignments() {
   const [loading, setLoading] = useState(true)
   const [submittingId, setSubmittingId] = useState(null)
   const [text, setText] = useState('')
+  const [file, setFile] = useState(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const navigate = useNavigate()
@@ -42,12 +43,17 @@ function StudentAssignments() {
     setError('')
     setSuccess('')
     try {
-      await api.post(`/courses/${courseId}/assignments/${assignmentId}/submissions/`, {
-        text
+      const formData = new FormData()
+      if (text) formData.append('text', text)
+      if (file) formData.append('file', file)
+
+      await api.post(`/courses/${courseId}/assignments/${assignmentId}/submissions/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       })
       setSuccess('Assignment submitted successfully!')
       setSubmittingId(null)
       setText('')
+      setFile(null)
       fetchData()
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong.')
@@ -101,13 +107,26 @@ function StudentAssignments() {
                       <p className="text-sm font-medium text-green-700">
                         Grade: {submission.mark_obtained} / {assignment.total_marks}
                       </p>
+                      {submission.text && <p className="text-xs text-gray-500 mt-1">{submission.text}</p>}
+                      {submission.file && (
+                        <a href={submission.file} target="_blank" rel="noopener noreferrer"
+                           className="text-xs text-blue-600 hover:underline mt-1 inline-block">
+                          View submitted file ↗
+                        </a>
+                      )}
                     </div>
                   )}
 
                   {submission?.status === 'submitted' && (
                     <div className="bg-yellow-50 p-3 rounded mb-3">
                       <p className="text-sm text-yellow-700">Submitted — waiting for grade</p>
-                      <p className="text-xs text-gray-400 mt-1">{submission.text}</p>
+                      {submission.text && <p className="text-xs text-gray-400 mt-1">{submission.text}</p>}
+                      {submission.file && (
+                        <a href={submission.file} target="_blank" rel="noopener noreferrer"
+                           className="text-xs text-blue-600 hover:underline mt-1 inline-block">
+                          View submitted file ↗
+                        </a>
+                      )}
                     </div>
                   )}
 
@@ -122,6 +141,11 @@ function StudentAssignments() {
                             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
                           />
+                          <input
+                            type="file"
+                            onChange={(e) => setFile(e.target.files[0] || null)}
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                          />
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleSubmit(assignment.id)}
@@ -130,7 +154,7 @@ function StudentAssignments() {
                               Submit
                             </button>
                             <button
-                              onClick={() => { setSubmittingId(null); setText('') }}
+                              onClick={() => { setSubmittingId(null); setText(''); setFile(null) }}
                               className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-300 transition"
                             >
                               Cancel

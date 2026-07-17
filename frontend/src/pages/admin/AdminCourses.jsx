@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 
-
 const AdminCourses = () => {
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
@@ -35,8 +34,6 @@ const AdminCourses = () => {
       setLoading(false);
     }
   };
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,7 +91,6 @@ const AdminCourses = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       <div className="max-w-6xl mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Manage Courses</h2>
@@ -173,6 +169,33 @@ const AdminCourses = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Prerequisites
+                </label>
+                <select
+                  multiple
+                  value={formData.prerequisites.map((id) => String(id))}
+                  onChange={(e) => {
+                    const selected = Array.from(e.target.selectedOptions).map(
+                      (o) => Number(o.value),
+                    );
+                    setFormData({ ...formData, prerequisites: selected });
+                  }}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 h-32"
+                >
+                  {courses
+                    .filter((c) => (editCourse ? c.id !== editCourse.id : true))
+                    .map((course) => (
+                      <option key={course.id} value={course.id}>
+                        {course.name}
+                      </option>
+                    ))}
+                </select>
+                <p className="text-xs text-gray-400 mt-1">
+                  Hold Ctrl (or Cmd) to select multiple
+                </p>
               </div>
               <div className="flex gap-3">
                 <button

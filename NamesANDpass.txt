@@ -1,10 +1,22 @@
+student1
+liksdHFgiw12313
+
+student2
+liksdHFgiw12313
+
+
 student3
 liksdHFgiw12313
 
 teacher
 abdulbari5
-abdulbari@gmail.com
+abdulbari5@gmail.com
 qwoeuithro2834hrwjnef
+
+teacher1
+teacher1@gmail.com 
+qwoeuithro2834hrwjnef
+
 
 
 Rumon Reza
@@ -18,3 +30,7 @@ qwoeuithro2834hrwjnef
 Jomela
 jomela@gmail.com
 soidhfsoudhfs
+
+admin1
+admin1@gmail.com
+qwoeuithro2834hrwjnef
