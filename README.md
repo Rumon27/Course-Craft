@@ -101,21 +101,21 @@ CourseCraft/
 
 #### 1. Clone the repository
 
-    ```bash
-    git clone https://github.com/Rumon27/Course-Craft.git
-    cd coursecraft
-    ```
+```bash
+git clone https://github.com/Rumon27/Course-Craft.git
+cd coursecraft
+```
 
 #### 2. Start the PostgreSQL database
 
-    ```bash
-    docker-compose up -d
-    ```
+```bash
+docker-compose up -d
+```
 
 #### 3. Create and activate virtual environment
 
-    ```bash
-    python -m venv venv
+```bash
+python -m venv venv
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # Mac/Linux
 ```
@@ -123,8 +123,8 @@ source venv/bin/activate     # Mac/Linux
 #### 4. Install dependencies
 
 ```bash
-    pip install -r requirements.txt
-    ```
+pip install -r requirements.txt
+```
 
 #### 5. Set up environment variables
 
@@ -132,26 +132,26 @@ Create a `.env` file inside the `backend/` folder:
 
 ```
 SECRET_KEY=your-secret-key-here
-    DEBUG=True
-    DB_NAME=coursecraft
-    DB_USER=coursecraft_user
-    DB_PASSWORD=yourpassword
-    DB_HOST=localhost
-    DB_PORT=5432
-    ```
+DEBUG=True
+DB_NAME=coursecraft
+DB_USER=coursecraft_user
+DB_PASSWORD=yourpassword
+DB_HOST=localhost
+DB_PORT=5432
+```
 
 #### 6. Run migrations
 
-    ```bash
-    cd backend
-    python manage.py migrate
+```bash
+cd backend
+python manage.py migrate
 ```
 
 #### 7. Start the backend server
 
 ```bash
-    python manage.py runserver
-    ```
+python manage.py runserver
+```
 
 The API will be available at `http://localhost:8000`
 
@@ -161,21 +161,21 @@ The API will be available at `http://localhost:8000`
 
 #### 1. Navigate to frontend folder
 
-    ```bash
-    cd frontend
+```bash
+cd frontend
 ```
 
 #### 2. Install dependencies
 
 ```bash
-    npm install
-    ```
+npm install
+```
 
 #### 3. Start the development server
 
-    ```bash
-    npm run dev
-    ```
+```bash
+npm run dev
+```
 
 The frontend will be available at `http://localhost:5173`
 
@@ -184,7 +184,7 @@ The frontend will be available at `http://localhost:5173`
 ## User Roles
 
 | Role | Registration | Created By |
-|------|-------------|------------|
+|------|--------------|------------|
 | Admin | `/admin/register` | Themselves |
 | Student | `/register` | Themselves |
 | Teacher | Cannot self-register | Admin only |
@@ -196,7 +196,7 @@ The frontend will be available at `http://localhost:5173`
 ### Users
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | POST | `/api/users/register/` | Register as admin or student | No |
 | POST | `/api/users/login/` | Login and get JWT tokens | No |
 | POST | `/api/users/token/refresh/` | Refresh access token | No |
@@ -206,7 +206,7 @@ The frontend will be available at `http://localhost:5173`
 ### Courses
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | GET | `/api/courses/` | List all active courses | Yes |
 | POST | `/api/courses/` | Create a new course | Admin only |
 | GET | `/api/courses/<id>/` | Get course details | Yes |
@@ -220,7 +220,7 @@ The frontend will be available at `http://localhost:5173`
 ### Assignments
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | GET | `/api/courses/<course_id>/assignments/` | List assignments for a course | Yes |
 | POST | `/api/courses/<course_id>/assignments/` | Create an assignment | Teacher only |
 | GET | `/api/courses/<course_id>/assignments/<id>/` | Get assignment details | Yes |
@@ -230,7 +230,7 @@ The frontend will be available at `http://localhost:5173`
 ### Submissions
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | GET | `/api/courses/<course_id>/assignments/<id>/submissions/` | List submissions | Yes (role-filtered) |
 | POST | `/api/courses/<course_id>/assignments/<id>/submissions/` | Submit an assignment | Student only |
 | PUT | `/api/courses/<course_id>/assignments/<id>/submissions/<id>/grade/` | Grade a submission | Teacher only |
@@ -238,7 +238,7 @@ The frontend will be available at `http://localhost:5173`
 ### Study Materials
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | GET | `/api/courses/<course_id>/materials/` | List materials for a course | Yes |
 | POST | `/api/courses/<course_id>/materials/` | Add a material | Teacher only |
 | PUT | `/api/courses/<course_id>/materials/<id>/` | Update a material | Teacher only |
@@ -247,7 +247,7 @@ The frontend will be available at `http://localhost:5173`
 ### Notifications
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | GET | `/api/notifications/` | Get my notifications | Yes |
 | PUT | `/api/notifications/<id>/read/` | Mark notification as read | Yes |
 | POST | `/api/notifications/global/` | Send global notification | Admin only |
@@ -255,7 +255,7 @@ The frontend will be available at `http://localhost:5173`
 ### Performance
 
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|--------------|----------------|
 | GET | `/api/performance/` | Get my performance | Student only |
 | GET | `/api/performance/<student_id>/` | Get a student's performance | Teacher/Admin only |
 
@@ -303,7 +303,7 @@ docker ps                  # Check running containers
 ## Environment Variables
 
 | Variable | Description |
-|----------|-------------|
+|----------|--------------|
 | `SECRET_KEY` | Django secret key |
 | `DEBUG` | Debug mode (True/False) |
 | `DB_NAME` | PostgreSQL database name |
